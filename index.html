@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Für Chiara Barbaro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
             --sweet-gradient: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%);
@@ -12,94 +13,56 @@
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Poppins', sans-serif; overflow: hidden;
             background: var(--sweet-gradient);
             transition: transform 1.5s ease-in-out, background 1s;
         }
 
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
+        #particles-js { position: absolute; width: 100%; height: 100%; z-index: 1; }
 
         .scene {
-            display: none;
-            width: 100vw;
-            height: 100vh;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: absolute;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity 0.8s ease;
+            display: none; width: 100vw; height: 100vh;
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; position: absolute; z-index: 10;
+            opacity: 0; transition: opacity 0.8s ease;
         }
 
         .active-scene { display: flex; opacity: 1; }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 40px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3); max-width: 600px;
         }
 
-        h1 { font-size: 3rem; color: #ff6b6b; margin-bottom: 10px; }
-
+        h1 { color: #ff6b6b; }
         .btn-sweet {
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            background: linear-gradient(45deg, #ff85a2, #ff6b6b);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 133, 162, 0.4);
-            transition: 0.3s;
+            padding: 15px 40px; font-size: 1.2rem; background: linear-gradient(45deg, #ff85a2, #ff6b6b);
+            color: white; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s;
         }
-
         .btn-sweet:hover { transform: scale(1.05); }
 
-        /* Zug Animation */
-        #train-emoji {
-            font-size: 6rem;
-            position: absolute;
-            transition: transform 3s ease-in, opacity 2s;
-        }
-
+        /* Bahn & Timer */
+        #train-emoji { font-size: 6rem; position: absolute; transition: transform 3s ease-in, opacity 2s; }
         .train-zoom { transform: scale(0); opacity: 0; }
+        .timer-circle { width: 70px; height: 70px; border-radius: 50%; border: 4px solid var(--accent-pink); display: flex; justify-content: center; align-items: center; font-size: 2rem; margin: 20px auto; }
 
-        /* Blumen */
-        .flower { font-size: 3rem; display: inline-block; opacity: 0; transform: scale(0); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .flower.show { opacity: 1; transform: scale(1); }
+        /* Mario Game */
+        #mario-canvas { background: #5c94fc; border: 4px solid #000; image-rendering: pixelated; }
+        .pixel-text { font-family: 'Press Start 2P', cursive; font-size: 14px; color: white; margin-bottom: 20px; text-shadow: 2px 2px #000; }
 
-        .timer-circle {
-            width: 70px; height: 70px; border-radius: 50%; border: 4px solid var(--accent-pink);
+        /* Final Zoom */
+        .zoom-box {
+            width: 10px; height: 10px; background: white; color: var(--svz-blue);
             display: flex; justify-content: center; align-items: center;
-            font-size: 2rem; font-weight: bold; color: var(--accent-pink); margin: 20px auto;
+            font-weight: 900; overflow: hidden; white-space: nowrap;
+            transition: all 4s cubic-bezier(0.1, 0, 0.9, 1);
         }
-
-        /* Matrix */
-        #matrix-canvas { position: absolute; top: 0; left: 0; display: none; z-index: 5; }
-        .matrix-word { font-family: monospace; font-size: 4rem; color: #0f0; text-shadow: 0 0 10px #0f0; opacity: 0; transition: 2s; z-index: 11; }
-
-        /* SVZ */
-        .svz-logo { font-size: 7rem; font-weight: 900; color: white; text-shadow: 0 0 20px var(--svz-blue); animation: pulse 1.5s infinite alternate; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
+        .zoom-active { width: 100vw; height: 100vh; font-size: 10rem; }
 
         .rotate-180 { transform: rotate(180deg); }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -108,7 +71,6 @@
     <div id="scene-1" class="scene active-scene">
         <div class="glass-card">
             <h1>Hallo Chiara! ✨</h1>
-            <p>Bist du bereit für eine kleine Reise?</p>
             <button class="btn-sweet" onclick="startJourney()">Reise beginnen 🚀</button>
         </div>
     </div>
@@ -119,41 +81,42 @@
 
     <div id="scene-3" class="scene">
         <div class="glass-card">
-            <div id="flower-box">
-                <span class="flower">🌸</span><span class="flower">🌷</span><span class="flower">🌹</span><span class="flower">🌻</span><span class="flower">🌺</span>
-            </div>
-            <h2>Für die beste Sekretärin!</h2>
-            <p>Ein kleines Gedicht für dich:<br>Dein Lächeln macht den Tag so hell,<br>die Arbeit läuft bei dir so schnell!</p>
-            <div class="timer-circle" id="countdown">5</div>
+            <h2>Für unsere Perle im Büro</h2>
+            <p>Ein Lächeln von dir, und die Zeit bleibt stehen.<br>Danke für alles!</p>
+            <div class="timer-circle" id="countdown">10</div>
         </div>
     </div>
 
-    <canvas id="matrix-canvas"></canvas>
+    <canvas id="matrix-canvas" style="position:absolute; top:0; left:0; display:none; z-index:5;"></canvas>
     <div id="scene-4" class="scene">
-        <h2 id="motivation-text" class="matrix-word">MOTIVATION</h2>
+        <h2 style="font-family:monospace; font-size:4rem; color:#0f0; text-shadow:0 0 10px #0f0;">MOTIVATION</h2>
     </div>
 
     <div id="scene-5" class="scene">
-        <h2 class="svz-logo">SVZ</h2>
-        <div class="glass-card" style="margin-top: 20px; max-width: 450px;">
-            <h3>Komm ins SVZ zum REMO!</h3>
-            <p>Weil es dort am schönsten ist, wenn du dabei bist. Wir freuen uns auf dich!</p>
+        <div class="glass-card">
+            <h2 style="font-size: 4rem; color: var(--svz-blue); margin: 0;">SVZ</h2>
+            <p style="font-style: italic; font-size: 1.1rem; color: #555;">
+                "Das SVZ ist nicht nur ein Ort, es ist der Raum zwischen den Gedanken, in dem Begegnung zur Inspiration wird. 
+                Beim REMO finden wir nicht nur Antworten, sondern den Mut, die richtigen Fragen zu stellen. 
+                Es ist die Balance zwischen Sein und Tun – ein Hafen für die Seele im Sturm des Alltags."
+            </p>
+            <button class="btn-sweet" onclick="goToMario()">Weiter zum Abenteuer 🕹️</button>
         </div>
+    </div>
+
+    <div id="scene-6" class="scene">
+        <p class="pixel-text">AUCH WENN ALLES VERPIXELT IST: BLEIB STARK!</p>
+        <canvas id="mario-canvas" width="400" height="300"></canvas>
+        <p class="pixel-text" style="font-size: 10px; margin-top:10px;">Steuere mit den Pfeiltasten zum gelben Feld!</p>
+    </div>
+
+    <div id="scene-7" class="scene" style="background: var(--svz-blue);">
+        <div id="final-zoom" class="zoom-box">BALD WEEKEND</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script>
-        // Partikel initialisieren
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 40 },
-                "color": { "value": "#ff85a2" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.5 },
-                "size": { "value": 5 },
-                "move": { "enable": true, "speed": 2, "direction": "top" }
-            }
-        });
+        particlesJS("particles-js", { "particles": { "number": { "value": 40 }, "color": { "value": "#ff85a2" }, "move": { "enable": true, "speed": 2, "direction": "top" } } });
 
         function switchScene(oldId, newId) {
             document.getElementById(oldId).classList.remove('active-scene');
@@ -167,25 +130,17 @@
 
         function startJourney() {
             switchScene('scene-1', 'scene-2');
-            
             setTimeout(() => {
-                const train = document.getElementById('train-emoji');
-                train.classList.add('train-zoom');
-                setTimeout(() => switchScene('scene-2', 'scene-3'), 2500);
-                setTimeout(showFlowers, 3500);
-            }, 1000);
-        }
-
-        function showFlowers() {
-            const flowers = document.querySelectorAll('.flower');
-            flowers.forEach((f, i) => {
-                setTimeout(() => f.classList.add('show'), i * 300);
-            });
-            startTimer();
+                document.getElementById('train-emoji').classList.add('train-zoom');
+                setTimeout(() => {
+                    switchScene('scene-2', 'scene-3');
+                    startTimer();
+                }, 2000);
+            }, 500);
         }
 
         function startTimer() {
-            let count = 5;
+            let count = 10;
             const display = document.getElementById('countdown');
             const timer = setInterval(() => {
                 count--;
@@ -211,37 +166,68 @@
         function startMatrix() {
             const canvas = document.getElementById('matrix-canvas');
             const ctx = canvas.getContext('2d');
-            canvas.style.display = "block";
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const chars = "MOTIVATION01";
+            canvas.style.display = "block"; canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             const drops = Array(Math.floor(canvas.width/16)).fill(1);
-
-            function draw() {
-                ctx.fillStyle = "rgba(0,0,0,0.05)";
-                ctx.fillRect(0,0,canvas.width, canvas.height);
+            const inst = setInterval(() => {
+                ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width, canvas.height);
                 ctx.fillStyle = "#0F0";
                 drops.forEach((y, i) => {
-                    const text = chars[Math.floor(Math.random()*chars.length)];
-                    ctx.fillText(text, i*16, y*16);
+                    ctx.fillText("01"[Math.floor(Math.random()*2)], i*16, y*16);
                     if(y*16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
                     drops[i]++;
                 });
-            }
-            const inst = setInterval(draw, 33);
-
+            }, 33);
             setTimeout(() => {
-                document.getElementById('motivation-text').style.opacity = 1;
-            }, 2000);
-
-            setTimeout(() => {
-                clearInterval(inst);
-                canvas.style.display = "none";
-                document.body.style.background = "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)";
+                clearInterval(inst); canvas.style.display = "none";
+                document.body.style.background = "white";
                 switchScene('scene-4', 'scene-5');
                 document.getElementById('particles-js').style.display = "block";
-            }, 6000);
+            }, 5000);
+        }
+
+        // Mario Game Logic
+        const canvas = document.getElementById('mario-canvas');
+        const ctx = canvas.getContext('2d');
+        let player = { x: 50, y: 250, size: 20 };
+        let goal = { x: 330, y: 50, size: 40 };
+
+        function goToMario() {
+            switchScene('scene-5', 'scene-6');
+            document.body.style.background = "#333";
+            drawMario();
+        }
+
+        function drawMario() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            // Ziel (Gelbes Feld)
+            ctx.fillStyle = "#ffcc00";
+            ctx.fillRect(goal.x, goal.y, goal.size, goal.size);
+            // Spieler (Rote Figur)
+            ctx.fillStyle = "#ff0000";
+            ctx.fillRect(player.x, player.y, player.size, player.size);
+            
+            if (player.x < goal.x + goal.size && player.x + player.size > goal.x &&
+                player.y < goal.y + goal.size && player.y + player.size > goal.y) {
+                finishGame();
+            } else {
+                requestAnimationFrame(drawMario);
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (document.getElementById('scene-6').classList.contains('active-scene')) {
+                if (e.key === "ArrowUp") player.y -= 10;
+                if (e.key === "ArrowDown") player.y += 10;
+                if (e.key === "ArrowLeft") player.x -= 10;
+                if (e.key === "ArrowRight") player.x += 10;
+            }
+        });
+
+        function finishGame() {
+            switchScene('scene-6', 'scene-7');
+            setTimeout(() => {
+                document.getElementById('final-zoom').classList.add('zoom-active');
+            }, 500);
         }
     </script>
 </body>
