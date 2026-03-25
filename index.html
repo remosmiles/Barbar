@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Für Chiara Barbaro</title>
+    <style>
+        :root {
+            --primary-pink: #ff85a2;
+            --svz-blue: #0056b3;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background-color: #fff0f3;
+            transition: transform 2s ease-in-out;
+        }
+
+        .scene {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: absolute;
+        }
+
+        #start-scene { display: flex; }
+
+        h1 { color: var(--primary-pink); font-size: 3rem; }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        button:hover { transform: scale(1.1); background: #ff4d7d; }
+
+        /* Animation: Zugfahrt */
+        .train { font-size: 5rem; transition: 3s ease-in; }
+        .zoom-in { transform: scale(50); opacity: 0; }
+
+        /* Blumen & Gedicht */
+        .flower-garden { font-size: 2rem; }
+        .poem { font-style: italic; max-width: 600px; line-height: 1.6; }
+
+        /* Timer */
+        #timer { font-size: 5rem; font-weight: bold; color: #333; }
+
+        /* Matrix Regen */
+        #matrix-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            display: none;
+            background: black;
+        }
+        #matrix-text {
+            position: relative;
+            color: #0F0;
+            font-family: monospace;
+            font-size: 5rem;
+            display: none;
+            text-shadow: 0 0 10px #0F0;
+        }
+
+        /* SVZ Sektion */
+        #svz-scene h2 { font-size: 6rem; color: var(--svz-blue); margin: 0; }
+        .remo-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin-top: 20px;
+        }
+
+        /* Hilfsklassen */
+        .hidden { display: none !important; }
+        .rotate-screen { transform: rotate(180deg); }
+    </style>
+</head>
+<body>
+
+    <div id="start-scene" class="scene">
+        <h1>Hallo Chiara Barbaro! ✨</h1>
+        <p>Ein kleiner Gruß nur für dich.</p>
+        <button onclick="startJourney()">Die Reise beginnen</button>
+    </div>
+
+    <div id="train-scene" class="scene hidden">
+        <div id="train-emoji" class="train">🚂</div>
+        <p>Wir fahren ins Herz des Bildschirms...</p>
+    </div>
+
+    <div id="poem-scene" class="scene hidden">
+        <div class="flower-garden">🌸 🌷 🌹 🌻 🌺</div>
+        <div class="poem">
+            <h2>Für meine Lieblings-Sekretärin</h2>
+            <p>Mit Fleiss und Herz, an jedem Tag,<br>
+            bist du die Seele, die jeder mag.<br>
+            Ein Lächeln hier, ein Wort so lieb,<br>
+            wir sind froh, dass es dich gibt!</p>
+        </div>
+        <div id="timer">5</div>
+    </div>
+
+    <canvas id="matrix-canvas"></canvas>
+    <div id="matrix-scene" class="scene hidden">
+        <h2 id="matrix-text">MOTIVATION</h2>
+    </div>
+
+    <div id="svz-scene" class="scene hidden">
+        <h2>SVZ</h2>
+        <div class="remo-box">
+            <h3>Besuche uns beim REMO!</h3>
+            <p>Warum du ins SVZ zum REMO kommen solltest? Weil hier die beste Energie fließt, wir gemeinsam wachsen und jeder Besuch dich ein Stück glücklicher macht. Wir freuen uns auf dich!</p>
+        </div>
+    </div>
+
+    <script>
+        function nextScene(currentId, nextId, delay = 0) {
+            setTimeout(() => {
+                document.getElementById(currentId).classList.add('hidden');
+                const next = document.getElementById(nextId);
+                next.classList.remove('hidden');
+                next.style.display = 'flex';
+            }, delay);
+        }
+
+        function startJourney() {
+            // Start -> Bahn
+            nextScene('start-scene', 'train-scene');
+            
+            const train = document.getElementById('train-emoji');
+            setTimeout(() => {
+                train.classList.add('zoom-in');
+            }, 500);
+
+            // Bahn -> Gedicht
+            setTimeout(() => {
+                nextScene('train-scene', 'poem-scene');
+                startCountdown();
+            }, 3500);
+        }
+
+        function startCountdown() {
+            let timeLeft = 5;
+            const timerElem = document.getElementById('timer');
+            const interval = setInterval(() => {
+                timeLeft--;
+                timerElem.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    rotateAndMatrix();
+                }
+            }, 1000);
+        }
+
+        function rotateAndMatrix() {
+            // Bildschirm drehen
+            document.body.classList.add('rotate-screen');
+            
+            setTimeout(() => {
+                // Gedicht weg, Matrix her
+                document.getElementById('poem-scene').classList.add('hidden');
+                document.body.style.background = "black";
+                document.body.classList.remove('rotate-screen'); // Wieder gerade für Matrix
+                
+                initMatrix();
+            }, 2000);
+        }
+
+        function initMatrix() {
+            const canvas = document.getElementById('matrix-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.style.display = 'block';
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const characters = "010101MOTIVATION010101";
+            const fontSize = 16;
+            const columns = canvas.width / fontSize;
+            const drops = Array(Math.floor(columns)).fill(1);
+
+            function draw() {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#0F0";
+                ctx.font = fontSize + "px monospace";
+
+                for (let i = 0; i < drops.length; i++) {
+                    const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                }
+            }
+            const matrixInterval = setInterval(draw, 33);
+
+            // Nach 4 Sekunden Matrix erscheint das Wort
+            setTimeout(() => {
+                document.getElementById('matrix-scene').style.display = 'flex';
+                document.getElementById('matrix-scene').classList.remove('hidden');
+                document.getElementById('matrix-text').style.display = 'block';
+            }, 2000);
+
+            // Übergang zum SVZ
+            setTimeout(() => {
+                clearInterval(matrixInterval);
+                canvas.style.display = 'none';
+                document.body.style.background = "#f0f2f5";
+                nextScene('matrix-scene', 'svz-scene');
+            }, 6000);
+        }
+    </script>
+</body>
+</html>
