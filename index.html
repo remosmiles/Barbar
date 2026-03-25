@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Für Chiara Barbaro</title>
     <style>
+        /* === Globale Stile & Variablen === */
         :root {
-            --primary-pink: #ff85a2;
-            --svz-blue: #0056b3;
+            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            --sweet-gradient: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
+            --text-color: #4a4a4a;
+            --accent-pink: #ff85a2;
+            --glass: rgba(255, 255, 255, 0.7);
+            --border-radius: 20px;
         }
 
         body, html {
@@ -15,12 +20,24 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
             overflow: hidden;
-            background-color: #fff0f3;
-            transition: transform 2s ease-in-out;
+            background: var(--sweet-gradient);
+            color: var(--text-color);
+            transition: transform 1.5s cubic-bezier(0.65, 0.05, 0.36, 1);
         }
 
+        /* === Hintergrund-Partikel (Herzen) === */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* === Szenen-Container === */
         .scene {
             display: none;
             width: 100vw;
@@ -31,133 +48,267 @@
             align-items: center;
             text-align: center;
             position: absolute;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        #start-scene { display: flex; }
-
-        h1 { color: var(--primary-pink); font-size: 3rem; }
-        
-        button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            background: var(--primary-pink);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: 0.3s;
+        .active-scene {
+            display: flex;
+            opacity: 1;
         }
 
-        button:hover { transform: scale(1.1); background: #ff4d7d; }
-
-        /* Animation: Zugfahrt */
-        .train { font-size: 5rem; transition: 3s ease-in; }
-        .zoom-in { transform: scale(50); opacity: 0; }
-
-        /* Blumen & Gedicht */
-        .flower-garden { font-size: 2rem; }
-        .poem { font-style: italic; max-width: 600px; line-height: 1.6; }
-
-        /* Timer */
-        #timer { font-size: 5rem; font-weight: bold; color: #333; }
-
-        /* Matrix Regen */
-        #matrix-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            display: none;
-            background: black;
-        }
-        #matrix-text {
-            position: relative;
-            color: #0F0;
-            font-family: monospace;
-            font-size: 5rem;
-            display: none;
-            text-shadow: 0 0 10px #0F0;
+        /* === Glassmorphismus Karten === */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
 
-        /* SVZ Sektion */
-        #svz-scene h2 { font-size: 6rem; color: var(--svz-blue); margin: 0; }
-        .remo-box {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 500px;
+        /* === Typografie === */
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #ff85a2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        p { font-size: 1.2rem; line-height: 1.6; }
+
+        /* === Buttons === */
+        .btn-sweet {
             margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, #ff85a2, #ff6b6b);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 133, 162, 0.4);
+            transition: all 0.3s ease;
         }
 
-        /* Hilfsklassen */
-        .hidden { display: none !important; }
+        .btn-sweet:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 133, 162, 0.6);
+        }
+
+        /* === 2. BAHNFAHRT-EFFEKT === */
+        #train-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+        }
+
+        .train-emoji {
+            font-size: 6rem;
+            position: absolute;
+            left: -150px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @keyframes driveAndZoom {
+            0% { left: -150px; transform: translateY(-50%) scale(1); opacity: 1; }
+            50% { left: 50%; transform: translateY(-50%) translate(-50%) scale(1); opacity: 1; }
+            100% { left: 55%; transform: translateY(-50%) translate(-50%) scale(0); opacity: 0; }
+        }
+
+        .animate-train {
+            animation: driveAndZoom 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+        }
+
+        /* === 3. BLUMEN & GEDICHT === */
+        .flower-garden { margin-bottom: 20px; }
+        .flower { font-size: 3rem; opacity: 0; display: inline-block; }
+
+        @keyframes growFlower {
+            0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+            70% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .animate-flower { animation: growFlower 0.8s ease-out forwards; }
+
+        .poem-text { font-style: italic; font-weight: 300; }
+
+        .timer-circle {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 5px solid var(--accent-pink);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2.5rem; font-weight: bold; color: var(--accent-pink);
+            margin: 20px auto 0;
+            background: white;
+        }
+
+        /* === Rotation Hilfsklasse === */
         .rotate-screen { transform: rotate(180deg); }
+
+        /* === 4. MATRIX SENE === */
+        #matrix-canvas {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 5; display: none;
+        }
+
+        .matrix-word {
+            font-family: 'Courier New', monospace;
+            font-size: 5rem;
+            color: #0f0;
+            text-shadow: 0 0 20px #0f0, 0 0 30px #0f0;
+            letter-spacing: 15px;
+            opacity: 0;
+            transition: opacity 2s ease;
+            z-index: 10;
+        }
+
+        /* === 5. SVZ SENE === */
+        .svz-logo {
+            font-size: 8rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px #0056b3, 0 0 30px #0056b3, 0 0 40px #0056b3;
+            animation: pulseNeon 1.5s infinite alternate;
+            margin: 0;
+        }
+
+        @keyframes pulseNeon {
+            from { text-shadow: 0 0 10px #fff, 0 0 20px #0056b3, 0 0 30px #0056b3; }
+            to { text-shadow: 0 0 15px #fff, 0 0 30px #3385ff, 0 0 40px #3385ff, 0 0 50px #3385ff; }
+        }
+
+        /* Responsive Anpassungen */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .matrix-word { font-size: 2.5rem; letter-spacing: 5px; }
+            .svz-logo { font-size: 5rem; }
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div id="start-scene" class="scene">
-        <h1>Hallo Chiara Barbaro! ✨</h1>
-        <p>Ein kleiner Gruß nur für dich.</p>
-        <button onclick="startJourney()">Die Reise beginnen</button>
-    </div>
+    <div id="particles-js"></div>
 
-    <div id="train-scene" class="scene hidden">
-        <div id="train-emoji" class="train">🚂</div>
-        <p>Wir fahren ins Herz des Bildschirms...</p>
-    </div>
-
-    <div id="poem-scene" class="scene hidden">
-        <div class="flower-garden">🌸 🌷 🌹 🌻 🌺</div>
-        <div class="poem">
-            <h2>Für meine Lieblings-Sekretärin</h2>
-            <p>Mit Fleiss und Herz, an jedem Tag,<br>
-            bist du die Seele, die jeder mag.<br>
-            Ein Lächeln hier, ein Wort so lieb,<br>
-            wir sind froh, dass es dich gibt!</p>
+    <div id="scene-start" class="scene active-scene">
+        <div class="glass-card">
+            <h1>Hallo Chiara! ✨</h1>
+            <p>Schön, dass du da bist. Ich habe eine kleine,<br>süße Überraschung für dich vorbereitet.</p>
+            <button class="btn-sweet" onclick="startJourney()">Reise beginnen 🚀</button>
         </div>
-        <div id="timer">5</div>
+    </div>
+
+    <div id="scene-train" class="scene">
+        <div id="train-container">
+            <div id="train-emoji" class="train-emoji">🚂💨</div>
+        </div>
+        <p style="color: white; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Wir reisen tief in den Bildschirm...</p>
+    </div>
+
+    <div id="scene-poem" class="scene">
+        <div class="glass-card">
+            <div class="flower-garden">
+                <span class="flower">🌸</span>
+                <span class="flower">🌷</span>
+                <span class="flower">🌹</span>
+                <span class="flower">🌻</span>
+                <span class="flower">🌺</span>
+            </div>
+            <div class="poem-text">
+                <h2>Für unsere Lieblings-Sekretärin</h2>
+                <p>Mit Fleiss und Herz, an jedem Tag,<br>
+                bist du die Seele, die jeder mag.<br>
+                Ein Lächeln hier, ein Wort so lieb,<br>
+                wir sind so froh, dass es dich gibt!</p>
+            </div>
+            <div class="timer-circle" id="timer">5</div>
+        </div>
     </div>
 
     <canvas id="matrix-canvas"></canvas>
-    <div id="matrix-scene" class="scene hidden">
-        <h2 id="matrix-text">MOTIVATION</h2>
+    <div id="scene-matrix" class="scene">
+        <h2 class="matrix-word" id="matrix-text">MOTIVATION</h2>
     </div>
 
-    <div id="svz-scene" class="scene hidden">
-        <h2>SVZ</h2>
-        <div class="remo-box">
-            <h3>Besuche uns beim REMO!</h3>
-            <p>Warum du ins SVZ zum REMO kommen solltest? Weil hier die beste Energie fließt, wir gemeinsam wachsen und jeder Besuch dich ein Stück glücklicher macht. Wir freuen uns auf dich!</p>
+    <div id="scene-svz" class="scene">
+        <h2 class="svz-logo">SVZ</h2>
+        <div class="glass-card" style="margin-top: 30px; max-width: 500px;">
+            <h3 style="color: #0056b3;">Komm zum REMO!</h3>
+            <p>Warum? Weil das SVZ mit dir einfach besser ist! Erlebe tolle Momente, gute Gespräche und tanke neue Energie beim REMO. Wir freuen uns riesig auf dich!</p>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    
     <script>
-        function nextScene(currentId, nextId, delay = 0) {
-            setTimeout(() => {
-                document.getElementById(currentId).classList.add('hidden');
-                const next = document.getElementById(nextId);
-                next.classList.remove('hidden');
-                next.style.display = 'flex';
-            }, delay);
+        /* === PARTICLE BACKGROUND KONFIGURATION === */
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#ff85a2" },
+                "shape": {
+                    "type": "image",
+                    "image": { "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgMi4xNTZsLTEuNDUxIDEuMzY1QzUuNDE4IDguMDgxIDIgMTEuMDcyIDIgMTUuMDQwIDIgMTkuODYwIDYuMTQwIDI0IDExIDI0YzIuMzM0IDAgNC42MTMtNS44MTggOC0xMSAzLjMwNy01LjgxOCA4LTEwLTIuNDMtNS44MTgtOC02LjA4LTkuNjY4TDEyIDIuMTU2eiIgZmlsbD0iI2ZmODVhMiIvPjwvc3ZnPg==", "width": 100, "height": 100 }
+                },
+                "opacity": { "value": 0.5, "random": true },
+                "size": { "value": 15, "random": true },
+                "move": { "enable": true, "speed": 2, "direction": "top", "random": true, "straight": false, "out_mode": "out" }
+            },
+            "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "bubble" } }, "modes": { "bubble": { "size": 20, "distance": 200, "duration": 2 } } },
+            "retina_detect": true
+        });
+
+        /* === LOGIK & ÜBERGÄNGE === */
+        
+        function showScene(sceneId) {
+            // Alle Szenen deaktivieren
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active-scene'));
+            // Gewünschte Szene aktivieren
+            const nextScene = document.getElementById(sceneId);
+            nextScene.classList.add('active-scene');
         }
 
+        // 1. Start -> Bahn
         function startJourney() {
-            // Start -> Bahn
-            nextScene('start-scene', 'train-scene');
+            showScene('scene-train');
+            // Hintergrund-Partikel stoppen (Performance für Bahn)
+            document.getElementById('particles-js').style.display = 'none';
             
             const train = document.getElementById('train-emoji');
-            setTimeout(() => {
-                train.classList.add('zoom-in');
-            }, 500);
+            train.classList.add('animate-train');
 
-            // Bahn -> Gedicht
+            // 2. Bahn -> Gedicht
             setTimeout(() => {
-                nextScene('train-scene', 'poem-scene');
+                showScene('scene-poem');
+                animateFlowers();
+                // Hintergrund-Partikel wieder an, aber "süßer"
+                document.getElementById('particles-js').style.display = 'block';
                 startCountdown();
-            }, 3500);
+            }, 4000); // Wartet bis Zug-Animation fertig ist
         }
 
+        // Blumen nacheinander erscheinen lassen
+        function animateFlowers() {
+            const flowers = document.querySelectorAll('.flower');
+            flowers.forEach((flower, index) => {
+                setTimeout(() => {
+                    flower.classList.add('animate-flower');
+                }, index * 300); // 300ms Verzögerung zwischen jeder Blume
+            });
+        }
+
+        // 3. Countdown
         function startCountdown() {
             let timeLeft = 5;
             const timerElem = document.getElementById('timer');
@@ -171,20 +322,25 @@
             }, 1000);
         }
 
+        // 4. Rotation & Matrix
         function rotateAndMatrix() {
             // Bildschirm drehen
             document.body.classList.add('rotate-screen');
             
             setTimeout(() => {
-                // Gedicht weg, Matrix her
-                document.getElementById('poem-scene').classList.add('hidden');
+                // Szenes wechseln während Drehung
+                document.getElementById('scene-poem').classList.remove('active-scene');
                 document.body.style.background = "black";
-                document.body.classList.remove('rotate-screen'); // Wieder gerade für Matrix
+                document.getElementById('particles-js').style.display = 'none';
+                
+                // Drehung zurücksetzen für Matrix, aber Inhalt ist jetzt schwarz
+                document.body.classList.remove('rotate-screen');
                 
                 initMatrix();
-            }, 2000);
+            }, 1500); // Mitte der Rotations-Animation
         }
 
+        // Matrix Effekt
         function initMatrix() {
             const canvas = document.getElementById('matrix-canvas');
             const ctx = canvas.getContext('2d');
@@ -192,7 +348,7 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
-            const characters = "010101MOTIVATION010101";
+            const characters = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             const fontSize = 16;
             const columns = canvas.width / fontSize;
             const drops = Array(Math.floor(columns)).fill(1);
@@ -200,7 +356,7 @@
             function draw() {
                 ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "#0F0";
+                ctx.fillStyle = "#0F0"; // Klassisches Matrix Grün
                 ctx.font = fontSize + "px monospace";
 
                 for (let i = 0; i < drops.length; i++) {
@@ -211,21 +367,26 @@
                 }
             }
             const matrixInterval = setInterval(draw, 33);
+            
+            // Show Scene-Matrix Container (für das Wort)
+            showScene('scene-matrix');
 
-            // Nach 4 Sekunden Matrix erscheint das Wort
+            // Nach 3 Sekunden Matrix erscheint das Wort MOTIVATION
             setTimeout(() => {
-                document.getElementById('matrix-scene').style.display = 'flex';
-                document.getElementById('matrix-scene').classList.remove('hidden');
-                document.getElementById('matrix-text').style.display = 'block';
+                const word = document.getElementById('matrix-text');
+                word.style.opacity = 1;
             }, 2000);
 
-            // Übergang zum SVZ
+            // 5. Matrix -> SVZ
             setTimeout(() => {
                 clearInterval(matrixInterval);
                 canvas.style.display = 'none';
-                document.body.style.background = "#f0f2f5";
-                nextScene('matrix-scene', 'svz-scene');
-            }, 6000);
+                // Hintergrund zurück zu Pastell
+                document.body.style.background = var(--bg-gradient); 
+                // Partikel wieder an
+                document.getElementById('particles-js').style.display = 'block';
+                showScene('scene-svz');
+            }, 7000);
         }
     </script>
 </body>
